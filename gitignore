@@ -1,0 +1,40 @@
+# Dataset files - keep the TON_IoT data local
+data/*.csv
+data/*.xlsx
+data/*.pdf
+data/*.zip
+*.pcap
+*.pcapng
+
+# Python files and environments
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.*
+
+# Jupyter temporary files
+.ipynb_checkpoints/
+
+# Generated models and large outputs
+models/
+*.pkl
+*.pickle
+*.joblib
+results/*.csv
+results/*.json
+results/*.parquet
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
