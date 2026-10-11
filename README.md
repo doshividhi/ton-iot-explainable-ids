@@ -69,20 +69,34 @@ We will use a stratified train, validation, and test split. We will also conduct
 ```text
 ton-iot-explainable-ids/
 ├── README.md
+├── requirements.txt
 ├── .gitignore
 ├── data/
-│   └── README.md
+│   └── README.md                 # how to download train_test_network.csv (not committed)
 ├── docs/
-│   └── project_proposal.pdf
+│   └── dataset_reference/        # TON_IoT feature descriptions and record statistics
 ├── notebooks/
-│   ├── 01_data_audit_eda.ipynb
-│   ├── 02_baseline_model.ipynb
-│   ├── 03_candidate_models.ipynb
-│   └── 04_model_explainability.ipynb
+│   ├── 01_data_audit_eda.ipynb             # profiling, data quality, leakage checks, EDA plots
+│   ├── 02_preprocessing.ipynb              # 70/15/15 stratified split + saved preprocessing pipeline
+│   ├── 03_preliminary_baseline_models.ipynb # Logistic Regression and Random Forest baselines
+│   └── 04_supplementary_checks.ipynb       # duplicates across splits, de-duplicated retraining,
+│                                            # majority-class baseline, port ablation
 ├── src/
-├── results/
-└── dashboard/
+│   ├── data_preprocessing.py     # script version of the preprocessing (being aligned with notebook 02)
+│   └── make_report_figures.py    # redraws Figures 1–3 in the interim report
+└── results/
+    ├── metrics/                  # CSV/JSON outputs from every notebook
+    ├── figures/                  # plots and confusion matrices from notebooks 01 and 03
+    └── report_figures/           # Figures 1–3 used in the interim report
 ```
+
+Model files (`models/*.joblib`) are not committed because the Random Forest models are too large for GitHub. Running notebooks 02 and 03 recreates them.
+
+## How to Run
+
+1. Download `train_test_network.csv` and place it in `data/` (see `data/README.md`).
+2. Install dependencies: `pip install -r requirements.txt`
+3. Run the notebooks in order from the `notebooks/` folder: 01 → 02 → 03 → 04.
 
 ## Responsible AI and Security Considerations
 
@@ -90,9 +104,18 @@ The project will report class-specific performance because missed attacks and ex
 
 ## Project Status
 
-**Current stage:** Project proposal and dataset preparation.
+**Current stage:** Interim Progress Report 1 — data audit, preprocessing pipeline and preliminary baselines complete.
 
-Model development, evaluation, explainability analysis, and the demonstration will be added as the project progresses.
+| Model (stratified random test split) | Task | Accuracy | Macro-F1 | MITM recall |
+|---|---|---|---|---|
+| Majority class | Binary | 0.763 | 0.433 | — |
+| Logistic Regression | Binary | 0.960 | 0.944 | — |
+| Random Forest | Binary | 0.999 | 0.999 | — |
+| Majority class | 10-class | 0.237 | 0.038 | 0.00 |
+| Logistic Regression | 10-class | 0.838 | 0.797 | 0.94 |
+| Random Forest | 10-class | 0.988 | 0.966 | 0.82 |
+
+These scores are treated as an upper bound. Each attack type comes from only 2–6 source hosts, so the next step is a host-grouped evaluation, followed by MITM tuning on the validation split and SHAP explanations.
 
 ## Citation
 

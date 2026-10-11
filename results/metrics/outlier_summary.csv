@@ -1,0 +1,17 @@
+column,outlier_count,q1,q3
+duration,47670,0.0,0.0541955
+dst_ip_bytes,43437,0.0,134.0
+dst_bytes,43158,0.0,89.0
+dst_port,40690,65.0,1253.0
+src_port,39337,34608.0,51133.0
+dns_qclass,34768,0.0,0.0
+dns_qtype,34768,0.0,0.0
+dst_pkts,24273,0.0,2.0
+src_ip_bytes,21624,48.0,415.0
+src_pkts,15412,1.0,4.0
+src_bytes,12426,0.0,130.0
+dns_rcode,8699,0.0,0.0
+missed_bytes,2945,0.0,0.0
+http_status_code,298,0.0,0.0
+http_response_body_len,277,0.0,0.0
+http_request_body_len,16,0.0,0.0
