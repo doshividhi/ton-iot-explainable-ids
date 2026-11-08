@@ -1,0 +1,13 @@
+type,pred,flows
+backdoor,scanning,18538
+dos,scanning,10830
+xss,ransomware,5368
+normal,dos,3301
+normal,ddos,1706
+xss,injection,1448
+dos,mitm,1394
+normal,ransomware,725
+injection,xss,667
+xss,ddos,576
+normal,mitm,453
+normal,injection,320

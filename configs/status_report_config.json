@@ -1,0 +1,41 @@
+{
+  "random_seed": 42,
+  "data_path": "data/train_test_network.csv",
+  "external_dir": "data/external/unsw_nb15",
+  "n_folds": 5,
+  "official_train_test_counts": {
+    "normal": 300000,
+    "backdoor": 20000,
+    "ddos": 20000,
+    "dos": 20000,
+    "injection": 20000,
+    "password": 20000,
+    "ransomware": 20000,
+    "scanning": 20000,
+    "xss": 20000,
+    "mitm": 1043
+  },
+  "official_attack_share": 0.3493,
+  "logreg": {"max_iter": 300, "C": 1.0},
+  "random_forest_candidates": [
+    {"n_estimators": 200, "max_depth": null, "min_samples_leaf": 1, "max_features": "sqrt"},
+    {"n_estimators": 200, "max_depth": null, "min_samples_leaf": 5, "max_features": "sqrt"},
+    {"n_estimators": 200, "max_depth": 20, "min_samples_leaf": 2, "max_features": "sqrt"},
+    {"n_estimators": 200, "max_depth": null, "min_samples_leaf": 2, "max_features": 0.5}
+  ],
+  "hist_gb_candidates": [
+    {"learning_rate": 0.1, "max_leaf_nodes": 31, "l2_regularization": 0.0},
+    {"learning_rate": 0.05, "max_leaf_nodes": 63, "l2_regularization": 1.0},
+    {"learning_rate": 0.1, "max_leaf_nodes": 15, "l2_regularization": 1.0},
+    {"learning_rate": 0.2, "max_leaf_nodes": 31, "l2_regularization": 0.0}
+  ],
+  "isolation_forest": {"n_estimators": 200, "normal_quantile_threshold": 0.95},
+  "adversarial": {
+    "pad_bytes_min": 64,
+    "pad_bytes_max": 1024,
+    "slowdown_min": 2.0,
+    "slowdown_max": 10.0,
+    "augment_fraction": 0.3
+  },
+  "external_adaptation_fraction": 0.05
+}

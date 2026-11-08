@@ -1,0 +1,9 @@
+type,proto,service,conn_state,flows
+ransomware,tcp,-,OTH,33
+ransomware,tcp,-,RSTOS0,32
+ransomware,tcp,-,SH,27
+mitm,icmp,-,OTH,25
+ddos,udp,dns,SF,19
+xss,udp,dns,S0,17
+ddos,udp,dns,S0,15
+ransomware,udp,-,S0,14

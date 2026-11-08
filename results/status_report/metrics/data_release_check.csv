@@ -1,0 +1,12 @@
+class,official_train_test,our_file,matches_official
+normal,300000,50000,False
+backdoor,20000,20000,True
+ddos,20000,20000,True
+dos,20000,20000,True
+injection,20000,20000,True
+password,20000,20000,True
+ransomware,20000,20000,True
+scanning,20000,20000,True
+xss,20000,20000,True
+mitm,1043,1043,True
+TOTAL,461043,211043,False

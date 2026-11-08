@@ -1,0 +1,9 @@
+pred,proto,service,conn_state,flows
+dos,tcp,-,S0,3282
+ddos,udp,dns,SF,1529
+ransomware,udp,-,S0,624
+injection,tcp,http,SF,263
+mitm,tcp,http,SF,160
+mitm,tcp,ssl,SF,108
+ddos,tcp,http,SF,97
+xss,tcp,-,SHR,64

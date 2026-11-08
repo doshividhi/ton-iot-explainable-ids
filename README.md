@@ -79,15 +79,22 @@ ton-iot-explainable-ids/
 │   ├── 01_data_audit_eda.ipynb             # profiling, data quality, leakage checks, EDA plots
 │   ├── 02_preprocessing.ipynb              # 70/15/15 stratified split + saved preprocessing pipeline
 │   ├── 03_preliminary_baseline_models.ipynb # Logistic Regression and Random Forest baselines
-│   └── 04_supplementary_checks.ipynb       # duplicates across splits, de-duplicated retraining,
-│                                            # majority-class baseline, port ablation
+│   ├── 04_supplementary_checks.ipynb       # duplicates across splits, de-duplicated retraining,
+│   │                                        # majority-class baseline, port ablation
+│   └── 05_status_report_experiments.ipynb  # Status Report: host-grouped CV, model comparison, tuning,
+│                                            # fingerprint ablation, error analysis, SHAP, evasion test,
+│                                            # UNSW-NB15 generalization, drift (PSI)
+├── configs/
+│   └── status_report_config.json # seeds, candidate hyperparameters, experiment settings
 ├── src/
+│   ├── status_report_experiments.py  # same code as notebook 05 (VS Code "# %%" cells)
 │   ├── data_preprocessing.py     # script version of the preprocessing (being aligned with notebook 02)
 │   └── make_report_figures.py    # redraws Figures 1–3 in the interim report
 └── results/
     ├── metrics/                  # CSV/JSON outputs from every notebook
     ├── figures/                  # plots and confusion matrices from notebooks 01 and 03
-    └── report_figures/           # Figures 1–3 used in the interim report
+    ├── report_figures/           # Figures 1–3 used in the interim report
+    └── status_report/            # metrics/ and figures/ for the Status Report (notebook 05)
 ```
 
 Model files (`models/*.joblib`) are not committed because the Random Forest models are too large for GitHub. Running notebooks 02 and 03 recreates them.
@@ -96,7 +103,8 @@ Model files (`models/*.joblib`) are not committed because the Random Forest mode
 
 1. Download `train_test_network.csv` and place it in `data/` (see `data/README.md`).
 2. Install dependencies: `pip install -r requirements.txt`
-3. Run the notebooks in order from the `notebooks/` folder: 01 → 02 → 03 → 04.
+3. For notebook 05, also download UNSW-NB15 into `data/external/unsw_nb15/` (see `data/README.md`).
+4. Run the notebooks in order from the `notebooks/` folder: 01 → 02 → 03 → 04 → 05. Notebook 05 takes about 50 minutes and caches finished steps in `results/status_report/cache/`.
 
 ## Responsible AI and Security Considerations
 
@@ -104,18 +112,20 @@ The project will report class-specific performance because missed attacks and ex
 
 ## Project Status
 
-**Current stage:** Interim Progress Report 1 — data audit, preprocessing pipeline and preliminary baselines complete.
+**Current stage:** Interim Status Report (Deliverable 3) — models compared on unseen hosts, robustness and generalization tested.
 
-| Model (stratified random test split) | Task | Accuracy | Macro-F1 | MITM recall |
+| Model (host-grouped 5-fold: test hosts never seen in training) | 10-class macro-F1 | Attack recall | False-positive rate | Recall at 1% FPR |
 |---|---|---|---|---|
-| Majority class | Binary | 0.763 | 0.433 | — |
-| Logistic Regression | Binary | 0.960 | 0.944 | — |
-| Random Forest | Binary | 0.999 | 0.999 | — |
-| Majority class | 10-class | 0.237 | 0.038 | 0.00 |
-| Logistic Regression | 10-class | 0.838 | 0.797 | 0.94 |
-| Random Forest | 10-class | 0.988 | 0.966 | 0.82 |
+| Majority class | 0.06 | 0.000 | 0.0% | — |
+| Logistic Regression | 0.65 ± 0.19 | 0.995 | 27.2% | 0.90 |
+| **Random Forest** | **0.70 ± 0.08** | **0.998** | 19.5% | **0.98** |
+| Histogram Gradient Boosting | 0.64 ± 0.14 | 0.990 | 25.7% | 0.91 |
+| Isolation Forest (unsupervised) | — | 0.213 | 6.7% | 0.005 |
 
-These scores are treated as an upper bound. Each attack type comes from only 2–6 source hosts, so the next step is a host-grouped evaluation, followed by MITM tuning on the validation split and SHAP explanations.
+On ordinary random folds the same models reach 0.91–0.96 macro-F1 with under 1.5% false positives, so earlier scores were optimistic.
+Adding IP addresses looks perfect on random folds (0.99) but collapses on unseen hosts (0.17); dropping ports changes little.
+The model does not transfer to UNSW-NB15 without adaptation (ROC-AUC 0.47) but recovers with 5% labelled data (0.97).
+Next: threshold calibration on validation hosts, re-run on the official 461,043-row release, adaptive evasion test, per-alert SHAP explanations.
 
 ## Citation
 
@@ -124,3 +134,5 @@ UNSW Canberra. *The TON_IoT Datasets*. Available at: <https://research.unsw.edu.
 Alsaedi, A., Moustafa, N., Tari, Z., Mahmood, A., and Anwar, A. “TON_IoT telemetry dataset: a new generation dataset of IoT and IIoT for data-driven Intrusion Detection Systems.” *IEEE Access*, 2020.
 
 Moustafa, N. “A new distributed architecture for evaluating AI-based security systems at the edge: Network TON_IoT datasets.” *Sustainable Cities and Society*, 2021.
+
+Moustafa, N., and Slay, J. “UNSW-NB15: A comprehensive data set for network intrusion detection systems.” *MilCIS*, 2015.

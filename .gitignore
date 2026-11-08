@@ -1,5 +1,6 @@
 # Dataset files - keep the TON_IoT data local
 data/*.csv
+data/**/*.csv
 data/*.xlsx
 data/*.pdf
 data/*.zip
@@ -38,3 +39,7 @@ desktop.ini
 .vscode/
 .idea/
 *.swp
+
+# Experiment caches
+results/status_report/cache/
+results/status_report_smoke/
