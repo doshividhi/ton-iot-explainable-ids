@@ -1,4 +1,4 @@
-"""TON_IoT Explainable IDS — demo dashboard.
+"""IoT Attack Detector — demo app.
 
 Run from the project folder:
     python app/build_demo_assets.py      # once, ~3 minutes
@@ -6,16 +6,12 @@ Run from the project folder:
 """
 import streamlit as st
 
-st.set_page_config(page_title="IoT Intrusion Detection Demo", page_icon=":material/shield:", layout="wide")
+st.set_page_config(page_title="IoT Attack Detector", page_icon=":material/shield:", layout="wide")
 
 pages = [
-    st.Page("views/overview.py", title="Overview", icon=":material/home:", default=True),
-    st.Page("views/upload_detect.py", title="Upload & detect", icon=":material/upload_file:"),
-    st.Page("views/live_monitor.py", title="Live monitor", icon=":material/monitor_heart:"),
-    st.Page("views/mitm_lab.py", title="MITM spoofing lab", icon=":material/policy:"),
-    st.Page("views/model_results.py", title="Model results", icon=":material/insights:"),
-    st.Page("views/attack_simulator.py", title="Attack simulator", icon=":material/science:"),
-    st.Page("views/drift_monitor.py", title="Drift monitor", icon=":material/monitoring:"),
+    st.Page("views/detect.py", title="Detect attacks", icon=":material/search:", default=True),
+    st.Page("views/how_it_works.py", title="How it works", icon=":material/info:"),
+    st.Page("views/try_to_fool_it.py", title="Try to fool it", icon=":material/science:"),
 ]
 nav = st.navigation(pages)
 with st.sidebar:

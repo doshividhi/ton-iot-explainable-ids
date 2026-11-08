@@ -126,15 +126,11 @@ python app/build_demo_assets.py   # once, about 3 minutes (needs data/train_test
 streamlit run app/app.py          # opens http://localhost:8501
 ```
 
-| Page | What it shows |
+| Page | What it does |
 |---|---|
-| Overview | Headline results and how the system works |
-| Upload & detect | Upload an Excel/CSV file of flows; every flow is scored, spoofing rules checked, results downloadable, each alert explained. If the file has a `type`/`label` column the app grades itself. Sample unseen files are created in `app/sample_data/` by the build step |
-| Live monitor | Replays traffic from unseen devices; switch between the calibrated and default threshold; open any alert to see its SHAP reasons and spoofing-rule hits, then confirm or dismiss it |
-| MITM spoofing lab | The man-in-the-middle attack chain, the four spoofing detectors, and rules vs. ML vs. hybrid |
-| Model results | Random split vs. unseen devices, fingerprint ablation, confusion matrix, external dataset |
-| Attack simulator | Pad or slow down an attack flow and watch the standard vs. adversarially trained model |
-| Drift monitor | Population Stability Index vs. training traffic, including UNSW-NB15, with the response workflow |
+| Detect attacks | Upload an Excel/CSV of network flows (or click *Try a sample file*). Shows how many connections look like attacks, a man-in-the-middle spoofing check, a results table with a plain-English reason for each alert, an accuracy check when the file has true labels, and a downloadable Excel of results |
+| How it works | One diagram, three headline numbers and a plain-language explanation |
+| Try to fool it | Raise a "disguise" level on an attack and see the normal detector fooled while the adversarially trained one still catches it |
 
 Screenshots are in `docs/demo_screenshots/`.
 
