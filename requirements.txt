@@ -8,3 +8,4 @@ jupyter
 shap>=0.45
 streamlit>=1.50
 plotly>=5.20
+openpyxl>=3.1

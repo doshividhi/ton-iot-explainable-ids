@@ -46,3 +46,4 @@ results/status_report_smoke/
 
 # Demo app build output (rebuild with python app/build_demo_assets.py)
 app/assets/
+app/sample_data/

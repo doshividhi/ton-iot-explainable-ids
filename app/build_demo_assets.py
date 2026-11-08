@@ -8,6 +8,7 @@ Creates app/assets/ with:
   * sim_standard.joblib / sim_adversarial.joblib + sim_pool.pkl - attack simulator models and example attacks
   * drift_reference.json   - training-traffic baseline for the drift monitor (and UNSW-NB15 PSI if available)
   * manifest.json          - thresholds and summary numbers
+  * app/sample_data/       - example Excel/CSV files of unseen flows for the Upload & detect page
 Needs data/train_test_network.csv (and optionally data/external/unsw_nb15/*.csv).
 """
 from pathlib import Path
@@ -88,6 +89,22 @@ replay = pd.concat(replay_parts).sample(frac=1, random_state=SEED).reset_index(d
 replay.insert(0, "flow_id", np.arange(1, len(replay) + 1))
 replay.to_pickle(ASSETS / "replay_flows.pkl")
 
+# 1b) Sample "unseen" files for the Upload & detect page --------------------------------
+# The upload page uses the fold-4 model; these flows come from fold 4's test hosts, which that model never saw.
+DEPLOY_FOLD = 4
+SAMPLES = APP_DIR / "sample_data"
+SAMPLES.mkdir(exist_ok=True)
+raw_cols = FEATURES + ["src_ip", "dst_ip", "label", "type"]
+holdout = df.iloc[folds[DEPLOY_FOLD][1]]
+parts = []
+for cls, group in holdout.groupby("type"):
+    parts.append(group.sample(min(len(group), 600 if cls == "normal" else 300), random_state=SEED + 1))
+unseen = pd.concat(parts).sample(frac=1, random_state=SEED + 1)[["src_ip", "dst_ip"] + FEATURES + ["label", "type"]]
+unseen.to_excel(SAMPLES / "unseen_flows_with_labels.xlsx", index=False)
+unseen.drop(columns=["label", "type"]).to_excel(SAMPLES / "unseen_flows_no_labels.xlsx", index=False)
+unseen.drop(columns=["label", "type"]).to_csv(SAMPLES / "unseen_flows_no_labels.csv", index=False)
+print(f"Sample upload files: {len(unseen):,} flows from unseen hosts -> {SAMPLES.relative_to(PROJECT_ROOT)}")
+
 # 2) Attack simulator: standard vs adversarially trained model ----------------------
 train, test = train_test_split(df, test_size=0.2, stratify=df["type"], random_state=SEED)
 
@@ -137,6 +154,8 @@ manifest = {
     "thresholds": thresholds,
     "features": COLS,
     "rule_columns": RULE_COLUMNS,
+    "deploy_fold": DEPLOY_FOLD,
+    "raw_features": FEATURES,
     "built_seconds": round(time.perf_counter() - start),
 }
 (ASSETS / "manifest.json").write_text(json.dumps(manifest, indent=2))

@@ -129,6 +129,7 @@ streamlit run app/app.py          # opens http://localhost:8501
 | Page | What it shows |
 |---|---|
 | Overview | Headline results and how the system works |
+| Upload & detect | Upload an Excel/CSV file of flows; every flow is scored, spoofing rules checked, results downloadable, each alert explained. If the file has a `type`/`label` column the app grades itself. Sample unseen files are created in `app/sample_data/` by the build step |
 | Live monitor | Replays traffic from unseen devices; switch between the calibrated and default threshold; open any alert to see its SHAP reasons and spoofing-rule hits, then confirm or dismiss it |
 | MITM spoofing lab | The man-in-the-middle attack chain, the four spoofing detectors, and rules vs. ML vs. hybrid |
 | Model results | Random split vs. unseen devices, fingerprint ablation, confusion matrix, external dataset |
