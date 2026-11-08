@@ -1,0 +1,6 @@
+rule,layer,flows_flagged,mitm_caught,mitm_recall,normal_flagged,normal_fpr,other_attacks_flagged
+ICMP Redirect spoofing,Routing (L3),18,18,0.017324350336862367,0,0.0,0
+TTL-exceeded / forwarding anomaly,Routing (L3),17,16,0.015399422521655439,1,2.3822569502346523e-05,0
+Rogue DNS responder,Name resolution (L7),4390,535,0.5149181905678537,635,0.015127331633990042,3220
+TLS stripping / interception,Encryption (L6),745,291,0.28007699711260825,64,0.0015246444481501775,390
+Any spoofing rule,All,5170,860,0.8277189605389798,700,0.016675798651642565,3610

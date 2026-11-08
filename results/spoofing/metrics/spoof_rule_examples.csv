@@ -1,0 +1,5 @@
+rule,proto,service,conn_state,icmp_type_or_src_port,dns_RA,dns_rcode,ssl_version,src_bytes,dst_bytes
+ICMP Redirect spoofing,icmp,-,OTH,5,-,0,-,364,0
+TTL-exceeded / forwarding anomaly,icmp,-,OTH,11,-,0,-,20210,0
+Rogue DNS responder,udp,dns,SF,42650,T,0,-,86,235
+TLS stripping / interception,tcp,ssl,SF,36990,-,0,-,66733,6492

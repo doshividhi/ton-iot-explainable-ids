@@ -1,0 +1,5 @@
+group,count
+MITM flows,1039
+flagged as an attack by the final system,738
+labelled MITM by the final system,665
+hit by at least one spoofing rule,860

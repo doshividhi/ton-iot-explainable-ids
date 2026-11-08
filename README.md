@@ -81,20 +81,30 @@ ton-iot-explainable-ids/
 │   ├── 03_preliminary_baseline_models.ipynb # Logistic Regression and Random Forest baselines
 │   ├── 04_supplementary_checks.ipynb       # duplicates across splits, de-duplicated retraining,
 │   │                                        # majority-class baseline, port ablation
-│   └── 05_status_report_experiments.ipynb  # Status Report: host-grouped CV, model comparison, tuning,
-│                                            # fingerprint ablation, error analysis, SHAP, evasion test,
-│                                            # UNSW-NB15 generalization, drift (PSI)
+│   ├── 05_status_report_experiments.ipynb  # Status Report: host-grouped CV, model comparison, tuning,
+│   │                                        # fingerprint ablation, error analysis, SHAP, evasion test,
+│   │                                        # UNSW-NB15 generalization, drift (PSI)
+│   └── 06_spoofing_and_calibration.ipynb   # MITM spoofing detectors, rules vs ML vs hybrid,
+│                                            # alert-threshold calibration on validation hosts
+├── app/                          # Streamlit demo dashboard (see "Demo dashboard" below)
+│   ├── app.py                    # entry point
+│   ├── build_demo_assets.py      # trains demo models and prepares replay traffic (run once)
+│   ├── demo_lib.py               # shared helpers for the pages
+│   └── views/                    # overview, live monitor, MITM lab, results, attack simulator, drift
 ├── configs/
 │   └── status_report_config.json # seeds, candidate hyperparameters, experiment settings
 ├── src/
+│   ├── ids_common.py             # shared: de-duplication, spoofing detectors, models, PSI
 │   ├── status_report_experiments.py  # same code as notebook 05 (VS Code "# %%" cells)
+│   ├── spoofing_and_calibration.py   # same code as notebook 06
 │   ├── data_preprocessing.py     # script version of the preprocessing (being aligned with notebook 02)
 │   └── make_report_figures.py    # redraws Figures 1–3 in the interim report
 └── results/
     ├── metrics/                  # CSV/JSON outputs from every notebook
     ├── figures/                  # plots and confusion matrices from notebooks 01 and 03
     ├── report_figures/           # Figures 1–3 used in the interim report
-    └── status_report/            # metrics/ and figures/ for the Status Report (notebook 05)
+    ├── status_report/            # metrics/ and figures/ for the Status Report (notebook 05)
+    └── spoofing/                 # metrics/ and figures/ for spoofing detection and calibration (notebook 06)
 ```
 
 Model files (`models/*.joblib`) are not committed because the Random Forest models are too large for GitHub. Running notebooks 02 and 03 recreates them.
@@ -104,7 +114,28 @@ Model files (`models/*.joblib`) are not committed because the Random Forest mode
 1. Download `train_test_network.csv` and place it in `data/` (see `data/README.md`).
 2. Install dependencies: `pip install -r requirements.txt`
 3. For notebook 05, also download UNSW-NB15 into `data/external/unsw_nb15/` (see `data/README.md`).
-4. Run the notebooks in order from the `notebooks/` folder: 01 → 02 → 03 → 04 → 05. Notebook 05 takes about 50 minutes and caches finished steps in `results/status_report/cache/`.
+4. Run the notebooks in order from the `notebooks/` folder: 01 → 02 → 03 → 04 → 05 → 06. Notebook 05 takes about 50 minutes and caches finished steps in `results/status_report/cache/`; notebook 06 takes about 4 minutes.
+
+## Demo Dashboard
+
+A Streamlit app for presenting the system live. From the project folder:
+
+```bash
+pip install -r requirements.txt
+python app/build_demo_assets.py   # once, about 3 minutes (needs data/train_test_network.csv)
+streamlit run app/app.py          # opens http://localhost:8501
+```
+
+| Page | What it shows |
+|---|---|
+| Overview | Headline results and how the system works |
+| Live monitor | Replays traffic from unseen devices; switch between the calibrated and default threshold; open any alert to see its SHAP reasons and spoofing-rule hits, then confirm or dismiss it |
+| MITM spoofing lab | The man-in-the-middle attack chain, the four spoofing detectors, and rules vs. ML vs. hybrid |
+| Model results | Random split vs. unseen devices, fingerprint ablation, confusion matrix, external dataset |
+| Attack simulator | Pad or slow down an attack flow and watch the standard vs. adversarially trained model |
+| Drift monitor | Population Stability Index vs. training traffic, including UNSW-NB15, with the response workflow |
+
+Screenshots are in `docs/demo_screenshots/`.
 
 ## Responsible AI and Security Considerations
 
@@ -125,7 +156,8 @@ The project will report class-specific performance because missed attacks and ex
 On ordinary random folds the same models reach 0.91–0.96 macro-F1 with under 1.5% false positives, so earlier scores were optimistic.
 Adding IP addresses looks perfect on random folds (0.99) but collapses on unseen hosts (0.17); dropping ports changes little.
 The model does not transfer to UNSW-NB15 without adaptation (ROC-AUC 0.47) but recovers with 5% labelled data (0.97).
-Next: threshold calibration on validation hosts, re-run on the official 461,043-row release, adaptive evasion test, per-alert SHAP explanations.
+**Final system (notebook 06):** hybrid Random Forest + four MITM spoofing detectors (ICMP redirect, TTL-exceeded, rogue DNS responder, TLS stripping) with an alert threshold calibrated on validation hosts.
+On unseen devices it catches 96.2% of attacks with 1.4% false alarms (down from 15.2% at the default threshold), and MITM F1 rises from 0.53 to 0.59 compared with the ML model alone at the same false-alarm budget.
 
 ## Citation
 
